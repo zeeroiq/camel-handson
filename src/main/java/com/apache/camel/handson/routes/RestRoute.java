@@ -48,6 +48,7 @@ public class RestRoute extends RouteBuilder {
                 .route().routeId(REST_ROUTE_ID)
                 .bean(OrderService.class, "fetchOrderLine")
                 .to("direct:processOrders")
+//                .bean(OrderService.class, "fetchOrders")
                 .endRest();
     }
 }

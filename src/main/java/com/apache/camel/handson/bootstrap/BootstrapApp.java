@@ -44,7 +44,7 @@ public class BootstrapApp implements CommandLineRunner {
         getProducts().stream().
                 forEach(product -> {
                     OrderLine orderLine = OrderLine.builder()
-                            .orderLineId(UUID.randomUUID().toString())
+                            .orderlineId(UUID.randomUUID().toString())
                             .product(product)
                             .nUnits(1)
                             .build();

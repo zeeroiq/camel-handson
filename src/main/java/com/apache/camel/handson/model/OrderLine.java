@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.UUID;
 
 @Data
 @Builder
@@ -18,7 +17,7 @@ public class OrderLine implements Serializable {
     private static final long serialVersionUID = 968791968777495104L;
 
     @Id
-    private String orderLineId;
+    private String orderlineId;
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_product_id", nullable = false)
     private Product product;

@@ -10,6 +10,7 @@ import org.apache.camel.Exchange;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -27,21 +28,26 @@ public class PriceAggregationStrategy implements AggregationStrategy {
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
         OrderLine body = newExchange.getIn().getBody(OrderLine.class);
         if(oldExchange == null) {
-            orderLineRepo.findById()
-            OrderDTO order = OrderDTO.builder()
-                    .orderNo(UUID.randomUUID().toString())
+//            orderLineRepo.findById()
+            String orderNo = orderRepo.findOrderNoFromOrderToOrderLine(body.getOrderlineId());
+            OrderDTO order = orderRepo.findById(orderNo).orElse(OrderDTO.builder()
+                    .orderNo("invalid-order")
                     .orderDate(Instant.now().toString())
-                    .orderPrice(body.getPrice())
-                    .build();
-            order.addOrderLines(body);
+                    .orderPrice(0.0)
+                    .build());
+            order.setOrderPrice(body.getPrice());
             newExchange.getIn().setBody(order, OrderDTO.class);
             return newExchange;
         }
         OrderLine newOrderLine = newExchange.getIn().getBody(OrderLine.class);
         OrderDTO order = oldExchange.getIn().getBody(OrderDTO.class);
-        order.setOrderPrice((order.getOrderPrice() == null ? 0.0 : order.getOrderPrice()) + newOrderLine.getPrice());
-        order.addOrderLines(newOrderLine);
-        log.info(">>>>> " + order);
+        Double totalPrice = order.getOrderLines().stream()
+                .map(orderLine -> orderLine.getPrice())
+                .reduce(0.0, (price1, price2) -> price1 + (price2 == null ? 0.0 : price2));
+
+        order.setOrderPrice(totalPrice);
+        log.info(">>>>> newOrderLine" + newOrderLine);
+        log.info(">>>>> OrderDTO" + order);
         oldExchange.getIn().setBody(order);
         return oldExchange;
     }

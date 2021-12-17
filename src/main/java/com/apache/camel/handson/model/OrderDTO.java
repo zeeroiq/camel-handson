@@ -22,6 +22,11 @@ public class OrderDTO implements Serializable {
     private String orderNo;
     private String orderDate;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name="order_to_orderline",
+            joinColumns={@JoinColumn(name="order_no")},
+            inverseJoinColumns={@JoinColumn(name="orderline_id")
+            }
+    )
     private List<OrderLine> orderLines;
     private Double totalDiscount;
     private Double orderPrice;
