@@ -5,7 +5,6 @@ import org.apache.camel.ProducerTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class ProductController {
 
     @GetMapping(value = "/products/{category}", produces = "application/json")
     public List<Product> getProductsByCategory(
-            @PathVariable("category") final String category){
+            @PathVariable("category") final String category) {
         producerTemplate.start();
         List<Product> products = producerTemplate
                 .requestBody("direct:fetchProducts", category, List.class);

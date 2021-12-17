@@ -15,7 +15,7 @@ public class FetchProductsRoute extends RouteBuilder {
         from(URI)
                 .routeId(ROUTE_ID)
                 .tracing()
-                .log(">>>>> {body}")
+                .log(">>>>> ${body}")
                 .bean(ProductService.class, "fetchProductsByCategory")
                 .end();
     }
